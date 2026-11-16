@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block title %}Contact | VUA ServiceDesk{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <p class="eyebrow">Contact the service desk</p>
+  <h1>{{ department_name }}</h1>
+  <p>Reach the team during the hours below.</p>
+</section>
+<section>
+  <ul class="role-list">
+    <li><strong>Email:</strong> {{ email }}</li>
+    <li><strong>Office hours:</strong> {{ office_hours }}</li>
+  </ul>
+</section>
+{% endblock %}
