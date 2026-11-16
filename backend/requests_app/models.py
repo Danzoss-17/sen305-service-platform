@@ -2,6 +2,7 @@ import uuid
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -48,7 +49,9 @@ class ServiceRequest(models.Model):
         default=Status.OPEN,
         db_index=True,
     )
+    due_at = models.DateTimeField(null=True, blank=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
+    resolution_summary = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,6 +60,7 @@ class ServiceRequest(models.Model):
         indexes = [
             models.Index(fields=("category", "status"), name="req_cat_status_idx"),
             models.Index(fields=("priority", "created_at"), name="req_priority_date_idx"),
+            models.Index(fields=("status", "due_at"), name="req_status_due_idx"),
         ]
         constraints = [
             models.CheckConstraint(
@@ -64,6 +68,15 @@ class ServiceRequest(models.Model):
                 name="request_priority_between_1_and_5",
             ),
         ]
+
+    
+    def clean(self):
+        super().clean()
+        if self.status in [self.Status.RESOLVED, self.Status.CLOSED]:
+            if not self.resolved_at:
+                raise ValidationError({"resolved_at": "Resolved or closed requests require a resolution timestamp."})
+            if not self.resolution_summary.strip():
+                raise ValidationError({"resolution_summary": "Resolved or closed requests require a resolution summary."})
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"

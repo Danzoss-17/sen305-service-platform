@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
 from django.test import TestCase
-from .models import Category, ServiceRequest, WorkOrder
+from ..models import Category, ServiceRequest, WorkOrder
 
 class ServiceRequestModelTests(TestCase):
     def setUp(self):

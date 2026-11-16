@@ -16,9 +16,9 @@ class CommentInline(admin.TabularInline):
 @admin.register(ServiceRequest)
 class ServiceRequestAdmin(admin.ModelAdmin):
     list_display = (
-        "title", "category", "requester", "priority", "status", "created_at",
+        "title", "category", "requester", "priority", "status", "due_at", "created_at",
     )
-    list_filter = ("status", "priority", "category")
+    list_filter = ("status", "priority", "category", "due_at")
     search_fields = ("title", "description", "location", "requester__username")
     readonly_fields = ("id", "created_at", "updated_at")
     autocomplete_fields = ("requester", "category")
